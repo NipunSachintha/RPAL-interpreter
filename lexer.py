@@ -44,17 +44,15 @@ class Lexer:
     def get_string(self):
         result = ''
         # Confirm opening ''''
-        if not (self.current_char == "'" and self.peek() == "'"):
+        if not (self.current_char == "'"):
             raise Exception("Invalid string start")
             
-        # Skip ''''
-        self.advance()
+        # Skip '''
         self.advance()
 
         while self.current_char is not None:
             # Check for closing ''''
-            if self.current_char == "'" and self.peek() == "'":
-                self.advance()
+            if self.current_char == "'" :
                 self.advance()
                 return Token('STRING', result)
                 
@@ -98,9 +96,9 @@ class Lexer:
             self.advance()
         
         # Check if it's a keyword or identifier
-        keywords = {'let', 'within', 'where', 'rec', 'eq', 'aug', 'fn', 'in'}
-        if result in keywords:
-            return Token('KEYWORD', result)
+        #keywords = {'let', 'within', 'where', 'rec', 'eq', 'aug', 'fn', 'in'}
+        #if result in keywords:
+            #return Token('KEYWORD', result)
         return Token('IDENTIFIER', result)
     
     def get_number(self):
