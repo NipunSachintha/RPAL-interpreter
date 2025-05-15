@@ -1,8 +1,11 @@
 from enum import Enum
 from typing import List, Optional, Union
 
+keywords = [
+    "let", "in", "fn", "where", "rec", "and", "aug",
+]
 
-class TokenType(Enum):
+class TokenType(str,Enum):
     """Enum representing the types of tokens in the RPAL language."""
     IDENTIFIER = "IDENTIFIER"
     INTEGER = "INTEGER"
@@ -185,7 +188,7 @@ def E():
         n = 0
 
         # Process identifiers until a non-identifier token is encountered
-        while token_storage.top().type == TokenType.IDENTIFIER:
+        while token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
             Vb()
             n += 1
 
@@ -434,7 +437,7 @@ def Ap():
         token_storage.pop()
 
         # Check for identifier token
-        if token_storage.top().type == TokenType.IDENTIFIER:
+        if token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
             token = token_storage.pop()
             build_tree("identifier", 0, True, token.value)
         else:
@@ -456,7 +459,7 @@ def R():
     valid_types = [TokenType.IDENTIFIER, TokenType.INTEGER, TokenType.STRING]
     valid_values = ["true", "false", "nil", "(", "dummy"]
     
-    while top.type in valid_types or top.value in valid_values:
+    while (top.type in valid_types or top.value in valid_values) and top.value not in keywords:
         Rn()
         top = token_storage.top()
         build_tree("gamma", 2, False)
@@ -470,7 +473,7 @@ def Rn():
     token_storage = TokenStorage.get_instance()
     top = token_storage.top()
 
-    if top.type == TokenType.IDENTIFIER:
+    if top.type == TokenType.IDENTIFIER and top.value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
         build_tree("identifier", 0, True, token.value)
@@ -571,7 +574,7 @@ def Db():
             token_storage.pop()
         else:
             raise SyntaxError("')' expected")
-    elif token_storage.top().type == TokenType.IDENTIFIER:
+    elif token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
         build_tree("identifier", 0, True, token.value)
@@ -589,7 +592,7 @@ def Db():
         else:
             n = 0
 
-            while token_storage.top().value != "=" and token_storage.top().type == TokenType.IDENTIFIER:
+            while token_storage.top().value != "=" and token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
                 Vb()
                 n += 1
 
@@ -618,7 +621,7 @@ def Vb():
     """
     token_storage = TokenStorage.get_instance()
 
-    if token_storage.top().type == TokenType.IDENTIFIER:
+    if token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
         build_tree("identifier", 0, True, token.value)
@@ -628,7 +631,7 @@ def Vb():
         if token_storage.top().value == ")":
             token_storage.pop()
             build_tree("()", 0, True)
-        elif token_storage.top().type == TokenType.IDENTIFIER:
+        elif token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
             # Parse Identifier
             token = token_storage.pop()
             build_tree("identifier", 0, True, token.value)
@@ -654,7 +657,7 @@ def Vl():
     """
     token_storage = TokenStorage.get_instance()
 
-    if token_storage.top().type == TokenType.IDENTIFIER:
+    if token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
         build_tree("identifier", 0, True, token.value)
