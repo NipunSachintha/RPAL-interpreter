@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional, Union
 
 keywords = [
-    "let", "in", "fn", "where", "rec", "and", "aug","within"
+    "let", "in", "fn", "where", "rec", "and", "aug","within", "eq","ls"
 ]
 
 class TokenType(str,Enum):
