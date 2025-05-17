@@ -54,7 +54,7 @@ class Lexer:
             # Check for closing ''''
             if self.current_char == "'" :
                 self.advance()
-                return Token('STRING', result)
+                return Token('STRING', "'"+result+"'")
                 
             # Handle escape sequences
             if self.current_char == '\\':
@@ -154,7 +154,7 @@ class Lexer:
                 return self.get_punction()
             
             ## Handle strings
-            if self.current_char == "'" and self.peek() == "'": 
+            if self.current_char == "'" : 
                 return self.get_string()
             
             # Handle an unrecognized character
