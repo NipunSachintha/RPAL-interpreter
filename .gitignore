@@ -6,3 +6,4 @@ __pycache__/
 test_lexer.py
 test_parser.py
 test_standardizer.py
+test_cse_machine.py
