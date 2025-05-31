@@ -144,10 +144,12 @@ class ASTNode:
         self.children = children if children else []
         self.value = value  # Token value like 'x', 5, etc.
 
-    def __repr__(self, level=0):
-        indent = '  ' * level
-        val_str = f":{self.value}" if self.value is not None else ""
-        res = f"{indent}{self.label}{val_str}\n"
-        for child in self.children:
-            res += child.__repr__(level + 1)
-        return res
+    def get_children(self):
+        return self.children
+    def get_root(self):
+        return self
+    def get_label(self):
+        return  self.label
+    def get_value(self):
+        return self.value
+        

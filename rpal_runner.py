@@ -2,28 +2,31 @@
 
 from lexer import Lexer
 from ST import standardize
-from CSE.cse_machine import CSEMachine 
-from CSE.cse_factory import CSEMachineFactory, ASTWrapper
 from parser import Parser
 from parser import TokenStorage, Tree
+from CSE.cse_machine import CSEMachine 
+from CSE.cse_factory import CSEMachineFactory
 
 
+# this should be replaced with test_standardizer.py print_ast function logic
 
-def print_ast(node, indent=0):
-    """Print the AST in a readable format"""
+
+def print_ast(node, dots=0):
     if not node:
         return
+    prefix = "." * dots
+    if hasattr(node, 'value') and node.value in {"nil", "true", "false", "dummy"}:
+        #print(f"{prefix}<nil>")
+        print(f"{prefix}<{node.value}>")
     
-    # Print the current node
-    prefix = "  " * indent
-    if hasattr(node, 'value') and node.value:
-        print(f"{prefix}{node.label}:{node.value}")
+    elif hasattr(node, 'value') and node.value is not None:
+        print(f"{prefix}<{node.label}:{node.value}>")
     else:
         print(f"{prefix}{node.label}")
-    
-    # Print children recursively
     for child in node.children:
-        print_ast(child, indent + 1)
+        print_ast(child, dots + 1)
+
+
 def run_pipeline(code):
     # 1. Lexical Analysis
     print("=== LEXER ===")
@@ -60,12 +63,12 @@ def run_pipeline(code):
 
     
     # Wrap it
-    wrapped_ast = ASTWrapper(st)
+    #wrapped_ast = ASTWrapper(st)
 
     # 4. Executing with CSE Machine
     print("\n=== CSE MACHINE OUTPUT ===")
     factory = CSEMachineFactory()
-    cse = factory.get_cse_machine(wrapped_ast)
+    cse = factory.get_cse_machine(st)
     result = cse.get_answer()
     print(result)
 
