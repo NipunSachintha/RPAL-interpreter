@@ -43,6 +43,14 @@ class LeafNode(TreeNode):
     def __init__(self, label: str, value: str = ""):
         super().__init__(label)
         self.value = value
+    
+    def get_value(self):
+        return self.value  # or value if that’s what your factory expects
+
+    def get_children(self):
+        return self.children
+    def get_label(self):
+        return self.label
 
 
 class InternalNode(TreeNode):
@@ -50,7 +58,7 @@ class InternalNode(TreeNode):
     pass
 
 
-class Lexer:
+'''class Lexer:
     """Simple lexer class for demonstration purposes."""
     def __init__(self, source: str):
         self.source = source
@@ -62,7 +70,7 @@ class Lexer:
         """Tokenize the source code. Simplified for this example."""
         # This is a placeholder implementation
         # A real implementation would scan the source and produce tokens
-        pass
+        pass'''
 
 
 class TokenStorage:
@@ -674,7 +682,7 @@ def Vl():
         raise SyntaxError("Identifier expected")
 
 
-# Example usage function (not part of the parser itself)
+'''# Example usage function (not part of the parser itself)
 def parse_rpal_program(source_code: str):
     """Parse an RPAL program and return the AST."""
     # Create a lexer and tokenize the source code
@@ -688,4 +696,4 @@ def parse_rpal_program(source_code: str):
     Parser.parse()
     
     # Return the root of the AST
-    return Tree.get_instance().ast_root
+    return Tree.get_instance().ast_root'''
