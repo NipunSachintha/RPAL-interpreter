@@ -70,11 +70,22 @@ def standardize(node):
 
     # Rule 7: rec x = e → x = (Y* (lambda x e))
     if label == 'rec':
-        X = node.children[0]
-        E = node.children[1]
-        lambda_node = ASTNode('lambda', [X, E])
-        ystar = ASTNode('Y*', [])
-        return ASTNode('=', [X, ASTNode('gamma', [ystar, lambda_node])])
+        eq_node = node.children[0]  # rec node has 1 child: an '=' node
+
+        if eq_node.label != '=' or len(eq_node.children) != 2:
+            raise Exception("Malformed 'rec' expression. Expected '=' with 2 children.")
+
+        x = eq_node.children[0]  # the identifier (e.g., P1)
+        e = eq_node.children[1]  # the expression (usually lambda...)
+
+        # Wrap e with lambda x if not already
+        lambda_node = ASTNode('lambda', [x, e])
+
+        # Build gamma(Y*, lambda x e)
+        gamma_node = ASTNode('gamma', [ASTNode('<Y*>'), lambda_node])
+
+        # Build final = x gamma(...)
+        return ASTNode('=', [x, gamma_node])
 
     # Rule 8: E1 @ N @ E2  →  gamma (gamma E1 N) E2
 

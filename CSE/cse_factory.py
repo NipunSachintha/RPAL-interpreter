@@ -27,7 +27,7 @@ class CSEMachineFactory:
             return Gamma()  # Gamma symbol
         elif label == "tau":
             return Tau(len(node.get_children()))  # Tau symbol with the number of children
-        elif label == "ystar":
+        elif label == "<Y*>":
             return Ystar()  # Y* symbol
         else:
             if label == "identifier" and value == "nil":

@@ -70,7 +70,8 @@ def run_pipeline(code):
     factory = CSEMachineFactory()
     cse = factory.get_cse_machine(st)
     result = cse.get_answer()
-    print(result)
+    if result is not None:
+        print(result)
 
     
 
