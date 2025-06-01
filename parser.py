@@ -1,9 +1,14 @@
 from enum import Enum
 from typing import List, Optional, Union
 
+#keywords = [
+#    "let", "in", "fn", "where", "rec", "and", "aug","within", "eq","ls"
+#]
 keywords = [
-    "let", "in", "fn", "where", "rec", "and", "aug","within", "eq","ls"
-]
+        "let", "in", "where", "rec", "fn", "aug", "or", "not",
+        "gr", "ge", "ls", "le", "eq", "ne", "true", "false",
+        "nil", "dummy", "within", "and"
+    ]
 
 class TokenType(str,Enum):
     """Enum representing the types of tokens in the RPAL language."""

@@ -15,8 +15,8 @@ class CSEMachine:
         while self.control:
             
             # change below paths to your own paths to see how the control and stack are changing
-            # self.write_control_to_file("C:\\Users\\samar\\Desktop\\PL_Project\\CSE Evaluation\\Control.txt")
-            # self.write_stack_to_file("C:\\Users\\samar\\Desktop\\PL_Project\\CSE Evaluation\\Stack.txt")
+            #self.write_control_to_file("D:\\Sem 4\\6. Programming Languages\\control.txt")
+            #self.write_stack_to_file("D:\\Sem 4\\6. Programming Languages\\stack.txt")
             
             current_symbol = self.control.pop()
             if isinstance(current_symbol, Id):
@@ -73,8 +73,10 @@ class CSEMachine:
                     self.stack.insert(0, lambda_expr)
                 else:
                     # Handle other symbols
-                    if next_symbol.get_data() == "Print":
-                        pass
+                    if next_symbol.get_data() == "print" or next_symbol.get_data() == "Print":
+                        #pass
+                        print_symbol = self.stack[0]
+                        print(print_symbol.get_data())
                     elif next_symbol.get_data() == "Stem":
                         # implement Stem function
                         s = self.stack.pop(0)
@@ -89,7 +91,7 @@ class CSEMachine:
                         # implement Conc function
                         s1 = self.stack.pop(0)
                         s2 = self.stack.pop(0)
-                        s1.set_data(s1.get_data() + s2.get_data())
+                        s1.set_data(str(s1.get_data() + s2.get_data()))
                         self.stack.insert(0, s1)
                     elif next_symbol.get_data() == "Order":
                         # implement Order function
@@ -222,7 +224,7 @@ class CSEMachine:
     def write_stack_to_file(self, file_path):
         with open(file_path, 'a') as file:
             for symbol in self.stack:
-                file.write(symbol.get_data())
+                file.write(str(symbol.get_data()))
                 if isinstance(symbol, (Lambda, Delta, E, Eta)):
                     file.write(str(symbol.get_index()))
                 file.write(",")
@@ -231,7 +233,7 @@ class CSEMachine:
     def write_control_to_file(self, file_path):
         with open(file_path, 'a') as file:
             for symbol in self.control:
-                file.write(symbol.get_data())
+                file.write(str(symbol.get_data()))
                 if isinstance(symbol, (Lambda, Delta, E, Eta)):
                     file.write(str(symbol.get_index()))
                 file.write(",")
@@ -346,6 +348,6 @@ class CSEMachine:
     def get_answer(self):
         # Get the answer from the CSEMachine
         self.execute()
-        if isinstance(self.stack[0], Tup):
-            return self.get_tuple_value(self.stack[0])
-        return self.stack[0].get_data()
+        #if isinstance(self.stack[0], Tup):
+        #    return self.get_tuple_value(self.stack[0])
+        #return self.stack[0].get_data()
