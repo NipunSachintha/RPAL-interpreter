@@ -6,8 +6,8 @@ from typing import List, Optional, Union
 #]
 keywords = [
         "let", "in", "where", "rec", "fn", "aug", "or", "not",
-        "gr", "ge", "ls", "le", "eq", "ne", "true", "false",
-        "nil", "dummy", "within", "and"
+        "gr", "ge", "ls", "le", "eq", "ne", 
+         "within", "and"
     ]
 
 class TokenType(str,Enum):

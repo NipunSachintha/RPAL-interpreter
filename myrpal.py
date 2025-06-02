@@ -8,6 +8,8 @@ from lexer import Lexer
 from ST import standardize
 from parser import Parser, TokenStorage, Tree
 from CSE.cse_factory import CSEMachineFactory
+from csemachine import *
+
 
 def print_ast(node, dots=0):
     """Print AST in the required format"""
@@ -82,11 +84,13 @@ def execute_program(filename):
     try:
         ast = parse_file(filename)
         st = standardize(ast)
+        result  = get_result(filename)
         
-        # Create CSE Machine and execute
-        factory = CSEMachineFactory()
-        cse_machine = factory.get_cse_machine(st)
-        result = cse_machine.get_answer()
+        
+        #Create CSE Machine and execute
+        #factory = CSEMachineFactory()
+        #cse_machine = factory.get_cse_machine(st)
+        #result = cse_machine.get_answer()
         if result is not None:
             print(result)
         

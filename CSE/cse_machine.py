@@ -12,194 +12,198 @@ class CSEMachine:
         # Execute the CSEMachine
         current_environment = self.environment[0]
         j = 1
-        while self.control:
-            
-            # change below paths to your own paths to see how the control and stack are changing
-            #self.write_control_to_file("D:\\Sem 4\\6. Programming Languages\\control.txt")
-            #self.write_stack_to_file("D:\\Sem 4\\6. Programming Languages\\stack.txt")
-            
-            current_symbol = self.control.pop()
-            if isinstance(current_symbol, Id):
-                self.stack.insert(0, current_environment.lookup(current_symbol))
-                # print(current_environment.lookup(current_symbol).get_data())
-            elif isinstance(current_symbol, Lambda):
-                current_symbol.set_environment(current_environment.get_index())
-                self.stack.insert(0, current_symbol)
+        try:
+            while self.control:
                 
+                # change below paths to your own paths to see how the control and stack are changing
+                self.write_control_to_file("D:\\Sem 4\\6. Programming Languages\\control.txt")
+                self.write_stack_to_file("D:\\Sem 4\\6. Programming Languages\\stack.txt")
                 
-            elif isinstance(current_symbol, Gamma):
-                next_symbol = self.stack.pop(0)
-                if isinstance(next_symbol, Lambda):
-                    # Handle Lambda expression
-                    lambda_expr = next_symbol
-                    e = E(j)
-                    j += 1
-                    if len(lambda_expr.identifiers) == 1:
-                        temp = self.stack.pop(0)
-                        e.values[lambda_expr.identifiers[0]] = temp
+                current_symbol = self.control.pop()
+                if isinstance(current_symbol, Id):
+                    self.stack.insert(0, current_environment.lookup(current_symbol))
+                    # print(current_environment.lookup(current_symbol).get_data())
+                elif isinstance(current_symbol, Lambda):
+                    current_symbol.set_environment(current_environment.get_index())
+                    self.stack.insert(0, current_symbol)
+                    
+                    
+                elif isinstance(current_symbol, Gamma):
+                    next_symbol = self.stack.pop(0)
+                    if isinstance(next_symbol, Lambda):
+                        # Handle Lambda expression
+                        lambda_expr = next_symbol
+                        e = E(j)
+                        j += 1
+                        if len(lambda_expr.identifiers) == 1:
+                            temp = self.stack.pop(0)
+                            e.values[lambda_expr.identifiers[0]] = temp
+                        else:
+                            tup = self.stack.pop(0)
+                            for i, id in enumerate(lambda_expr.identifiers):
+                                e.values[id] = tup.symbols[i]
+                        for env in self.environment:
+                            if env.get_index() == lambda_expr.get_environment():
+                                e.set_parent(env)
+                        current_environment = e
+                        self.control.append(e)
+                        self.control.append(lambda_expr.get_delta())
+                        self.stack.insert(0, e)
+                        self.environment.append(e)
+                    elif isinstance(next_symbol, Tup):
+                        # Handle Tup expression
+                        tup = next_symbol
+                        i = int(self.stack.pop(0).get_data())
+                        self.stack.insert(0, tup.symbols[i - 1])
+                    elif isinstance(next_symbol, Ystar):
+                        # Handle Ystar expression
+                        lambda_expr = self.stack.pop(0)
+                        eta = Eta()
+                        eta.set_index(lambda_expr.get_index())
+                        eta.set_environment(lambda_expr.get_environment())
+                        eta.set_identifier(lambda_expr.identifiers[0])
+                        eta.set_lambda(lambda_expr)
+                        self.stack.insert(0, eta)
+                    elif isinstance(next_symbol, Eta):
+                        # Handle Eta expression
+                        eta = next_symbol
+                        lambda_expr = eta.get_lambda()
+                        self.control.append(Gamma())
+                        self.control.append(Gamma())
+                        self.stack.insert(0, eta)
+                        self.stack.insert(0, lambda_expr)
                     else:
-                        tup = self.stack.pop(0)
-                        for i, id in enumerate(lambda_expr.identifiers):
-                            e.values[id] = tup.symbols[i]
-                    for env in self.environment:
-                        if env.get_index() == lambda_expr.get_environment():
-                            e.set_parent(env)
-                    current_environment = e
-                    self.control.append(e)
-                    self.control.append(lambda_expr.get_delta())
-                    self.stack.insert(0, e)
-                    self.environment.append(e)
-                elif isinstance(next_symbol, Tup):
-                    # Handle Tup expression
-                    tup = next_symbol
-                    i = int(self.stack.pop(0).get_data())
-                    self.stack.insert(0, tup.symbols[i - 1])
-                elif isinstance(next_symbol, Ystar):
-                    # Handle Ystar expression
-                    lambda_expr = self.stack.pop(0)
-                    eta = Eta()
-                    eta.set_index(lambda_expr.get_index())
-                    eta.set_environment(lambda_expr.get_environment())
-                    eta.set_identifier(lambda_expr.identifiers[0])
-                    eta.set_lambda(lambda_expr)
-                    self.stack.insert(0, eta)
-                elif isinstance(next_symbol, Eta):
-                    # Handle Eta expression
-                    eta = next_symbol
-                    lambda_expr = eta.get_lambda()
-                    self.control.append(Gamma())
-                    self.control.append(Gamma())
-                    self.stack.insert(0, eta)
-                    self.stack.insert(0, lambda_expr)
-                else:
-                    # Handle other symbols
-                    if next_symbol.get_data() == "print" or next_symbol.get_data() == "Print":
-                        #pass
-                        print_symbol = self.stack[0]
-                        print(print_symbol.get_data())
-                    elif next_symbol.get_data() == "Stem":
-                        # implement Stem function
-                        s = self.stack.pop(0)
-                        s.set_data(s.get_data()[0])
-                        self.stack.insert(0, s)
-                    elif next_symbol.get_data() == "Stern":
-                        # implement Stern function
-                        s = self.stack.pop(0)
-                        s.set_data(s.get_data()[1:])
-                        self.stack.insert(0, s)
-                    elif next_symbol.get_data() == "Conc":
-                        # implement Conc function
-                        s1 = self.stack.pop(0)
-                        s2 = self.stack.pop(0)
-                        s1.set_data(str(s1.get_data() + s2.get_data()))
-                        self.stack.insert(0, s1)
-                    elif next_symbol.get_data() == "Order":
-                        # implement Order function
-                        tup = self.stack.pop(0)
-                        n = Int(str(len(tup.symbols)))
-                        self.stack.insert(0, n)
-                    elif next_symbol.get_data() == "Isinteger":
-                        # implement Isinteger function
-                        if isinstance(self.stack[0], Int):
-                            self.stack.insert(0, Bool("true"))
-                        else:
-                            self.stack.insert(0, Bool("false"))
-                        self.stack.pop(1)
-                    elif next_symbol.get_data() == "Null":
-                        # implement Null function
-                        pass
-                    elif next_symbol.get_data() == "Itos":
-                        # implement Itos function
-                        pass
-                    elif next_symbol.get_data() == "Isstring":
-                        # implement Isstring function
-                        if isinstance(self.stack[0], Str):
-                            self.stack.insert(0, Bool("true"))
-                        else:
-                            self.stack.insert(0, Bool("false"))
-                        self.stack.pop(1)
-                    elif next_symbol.get_data() == "Istuple":
-                        # implement Istuple function
-                        if isinstance(self.stack[0], Tup):
-                            self.stack.insert(0, Bool("true"))
-                        else:
-                            self.stack.insert(0, Bool("false"))
-                        self.stack.pop(1)
-                    elif next_symbol.get_data() == "Isdummy":
-                        # implement Isdummy function
-                        if isinstance(self.stack[0], Dummy):
-                            self.stack.insert(0, Bool("true"))
-                        else:
-                            self.stack.insert(0, Bool("false"))
-                        self.stack.pop(1)
-                    elif next_symbol.get_data() == "Istruthvalue":
-                        # implement Istruthvalue function
-                        if isinstance(self.stack[0], Bool):
-                            self.stack.insert(0, Bool("true"))
-                        else:
-                            self.stack.insert(0, Bool("false"))
-                        self.stack.pop(1)
-                    elif next_symbol.get_data() == "Isfunction":
-                        # implement Isfunction function
-                        if isinstance(self.stack[0], Lambda):
-                            self.stack.insert(0, Bool("true"))
-                        else:
-                            self.stack.insert(0, Bool("false"))
-                        self.stack.pop(1)
+                        # Handle other symbols
+                        if next_symbol.get_data() == "print" or next_symbol.get_data() == "Print":
+                            #pass
+                            print_symbol = self.stack[0]
+                            print(print_symbol.get_data())
+                        elif next_symbol.get_data() == "Stem":
+                            # implement Stem function
+                            s = self.stack.pop(0)
+                            s.set_data(s.get_data()[0])
+                            self.stack.insert(0, s)
+                        elif next_symbol.get_data() == "Stern":
+                            # implement Stern function
+                            s = self.stack.pop(0)
+                            s.set_data(s.get_data()[1:])
+                            self.stack.insert(0, s)
+                        elif next_symbol.get_data() == "Conc":
+                            # implement Conc function
+                            s1 = self.stack.pop(0)
+                            s2 = self.stack.pop(0)
+                            s1.set_data((s1.get_data()[:-1] + s2.get_data()[1:]))
+                            self.stack.insert(0, s1)
+                        elif next_symbol.get_data() == "Order":
+                            # implement Order function
+                            tup = self.stack.pop(0)
+                            n = Int(str(len(tup.symbols)))
+                            self.stack.insert(0, n)
+                        elif next_symbol.get_data() == "Isinteger":
+                            # implement Isinteger function
+                            if isinstance(self.stack[0], Int):
+                                self.stack.insert(0, Bool("true"))
+                            else:
+                                self.stack.insert(0, Bool("false"))
+                            self.stack.pop(1)
+                        elif next_symbol.get_data() == "Null":
+                            # implement Null function
+                            pass
+                        elif next_symbol.get_data() == "Itos":
+                            # implement Itos function
+                            pass
+                        elif next_symbol.get_data() == "Isstring":
+                            # implement Isstring function
+                            if isinstance(self.stack[0], Str):
+                                self.stack.insert(0, Bool("true"))
+                            else:
+                                self.stack.insert(0, Bool("false"))
+                            self.stack.pop(1)
+                        elif next_symbol.get_data() == "Istuple":
+                            # implement Istuple function
+                            if isinstance(self.stack[0], Tup):
+                                self.stack.insert(0, Bool("true"))
+                            else:
+                                self.stack.insert(0, Bool("false"))
+                            self.stack.pop(1)
+                        elif next_symbol.get_data() == "Isdummy":
+                            # implement Isdummy function
+                            if isinstance(self.stack[0], Dummy):
+                                self.stack.insert(0, Bool("true"))
+                            else:
+                                self.stack.insert(0, Bool("false"))
+                            self.stack.pop(1)
+                        elif next_symbol.get_data() == "Istruthvalue":
+                            # implement Istruthvalue function
+                            if isinstance(self.stack[0], Bool):
+                                self.stack.insert(0, Bool("true"))
+                            else:
+                                self.stack.insert(0, Bool("false"))
+                            self.stack.pop(1)
+                        elif next_symbol.get_data() == "Isfunction":
+                            # implement Isfunction function
+                            if isinstance(self.stack[0], Lambda):
+                                self.stack.insert(0, Bool("true"))
+                            else:
+                                self.stack.insert(0, Bool("false"))
+                            self.stack.pop(1)
 
-            elif isinstance(current_symbol, E):
-                # Handle E expression
-                self.stack.pop(1)
-                self.environment[current_symbol.get_index()].set_is_removed(True)
-                y = len(self.environment)
-                while y > 0:
-                    if not self.environment[y - 1].get_is_removed():
-                        current_environment = self.environment[y - 1]
-                        break
+                elif isinstance(current_symbol, E):
+                    # Handle E expression
+                    self.stack.pop(1)
+                    self.environment[current_symbol.get_index()].set_is_removed(True)
+                    y = len(self.environment)
+                    while y > 0:
+                        if not self.environment[y - 1].get_is_removed():
+                            current_environment = self.environment[y - 1]
+                            break
+                        else:
+                            y -= 1
+                elif isinstance(current_symbol, Rator):
+                    if isinstance(current_symbol, Uop):
+                        # Handle Unary operation
+                        rator = current_symbol
+                        rand = self.stack.pop(0)
+                        self.stack.insert(0, self.apply_unary_operation(rator, rand))
+                    if isinstance(current_symbol, Bop):
+                        # Handle Binary operation
+                        rator = current_symbol
+                        rand1 = self.stack.pop(0)
+                        rand2 = self.stack.pop(0)
+                        self.stack.insert(0, self.apply_binary_operation(rator, rand1, rand2))
+                elif isinstance(current_symbol, Beta):
+                    # Handle Beta expression
+                    # print(self.stack[0].get_data())
+                    # self.print_control()
+                    # self.print_stack()
+                    # # self.control.pop(-2)
+                    # self.print_control()
+                    if (self.stack[0].get_data() == "true"):
+                        self.control.pop()
                     else:
-                        y -= 1
-            elif isinstance(current_symbol, Rator):
-                if isinstance(current_symbol, Uop):
-                    # Handle Unary operation
-                    rator = current_symbol
-                    rand = self.stack.pop(0)
-                    self.stack.insert(0, self.apply_unary_operation(rator, rand))
-                if isinstance(current_symbol, Bop):
-                    # Handle Binary operation
-                    rator = current_symbol
-                    rand1 = self.stack.pop(0)
-                    rand2 = self.stack.pop(0)
-                    self.stack.insert(0, self.apply_binary_operation(rator, rand1, rand2))
-            elif isinstance(current_symbol, Beta):
-                # Handle Beta expression
-                # print(self.stack[0].get_data())
-                # self.print_control()
-                # self.print_stack()
-                # # self.control.pop(-2)
-                # self.print_control()
-                if (self.stack[0].get_data() == "true"):
-                    self.control.pop()
+                        self.control.pop(-2)
+                    self.stack.pop(0)
+                    
+                    
+                    
+                elif isinstance(current_symbol, Tau):
+                    # Handle Tau expression
+                    tau = current_symbol
+                    tup = Tup()
+                    for _ in range(tau.get_n()):
+                        tup.symbols.append(self.stack.pop(0))
+                    self.stack.insert(0, tup)
+                elif isinstance(current_symbol, Delta):
+                    # Handle Delta expression
+                    self.control.extend(current_symbol.symbols)
+                elif isinstance(current_symbol, B):
+                    # Handle B expression
+                    self.control.extend(current_symbol.symbols)
                 else:
-                    self.control.pop(-2)
-                self.stack.pop(0)
-                
-                
-                
-            elif isinstance(current_symbol, Tau):
-                # Handle Tau expression
-                tau = current_symbol
-                tup = Tup()
-                for _ in range(tau.get_n()):
-                    tup.symbols.append(self.stack.pop(0))
-                self.stack.insert(0, tup)
-            elif isinstance(current_symbol, Delta):
-                # Handle Delta expression
-                self.control.extend(current_symbol.symbols)
-            elif isinstance(current_symbol, B):
-                # Handle B expression
-                self.control.extend(current_symbol.symbols)
-            else:
-                self.stack.insert(0, current_symbol)
+                    self.stack.insert(0, current_symbol)
+        except IndexError:
+            print("Error: Stack underflow. The program has terminated unexpectedly.")
+            return
 
     
 
