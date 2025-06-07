@@ -128,7 +128,12 @@ def built_in(function, argument):
             if "\\t" in argument:
                 argument = argument.replace("\\t", "\t")
 
-        stack.push(argument)
+        #stack.push(argument)
+        print(argument, end='')
+        
+        # For print function, we should return nil/dummy value
+        # not the printed value itself to avoid tuple construction issues
+        stack.push(argument) 
 
     # The Conc function concatenates two strings.
     elif (function == "Conc"):
@@ -423,4 +428,4 @@ def get_result(file_name):
     apply_rules()
 
     if print_present:
-        print(stack[0])
+        print()
