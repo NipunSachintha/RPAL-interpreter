@@ -19,16 +19,54 @@ This project is a Python-based interpreter for the **Right-reference Pedagogic A
 
 You can run and manage the project easily via `make` commands.
 
-#### Run RPAL Program (Print Final Output)
+#### Printing Final Output
+To run the RPAL program and print the final output, use the run target. You need to specify the path to the input file using the file variable
+```
+make run file=path/to/your/input.txt
+```
+Example:
+```
+make run file=inputs/t1.txt
+```
 
+#### Printing  Abstract Syntax Tree(AST)
+To print the Abstract Syntax Tree (AST) with the output, use the ast target.
+```
+make ast file=path/to/your/input.txt
+```
 
----
+#### Printing Standardized Abstract Syntax Tree(SAST)
+To print the standardized Abstract Syntax Tree (ST) with the output, use the st target.
+```
+make st file=path/to/your/input.txt
+```
+
 
 ### 🐍 Run with Python Directly
 
 You can also use `python` directly to execute the interpreter or inspect intermediate outputs.
 
-#### Run and Print Final Output
+You can also run the scripts directly using the python command with the appropriate switches.
+
+#### Printing Final Output
+```
+python myrpal.py path/to/your/input.txt
+```
+
+#### Printing Abstract Syntax Tree(AST)
+```
+python myrpal.py -ast path/to/your/input.txt 
+```
+
+#### Printing Standardized Abstract Syntax Tree(SAST)
+```
+python myrpal.py -st path/to/your/input.txt 
+```
+
+
+## Cleaning Up
+To remove all `__pycache__` directories and Python cache files in your repository, you can use the `make clean` command.
+
 
 
 ---

@@ -26,10 +26,7 @@ class Stack:
         if not self.is_empty():
             return self.stack.pop()
         else:
-            if self.type == "CSE":
-                print("Stack in CSE machine has become empty unexpectedly.")
-            else:
-                print("Stack used for AST generation has become empty unexpectedly.")
+            print("Stack became empty!")
             exit(1)
 
     # The following function lets you check whether the stack is empty.

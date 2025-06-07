@@ -1,0 +1,2 @@
+let sum n = n ls 0 -> 'Error' | n eq 0 -> 0 | n * (n + 1) / 2
+in Print(sum 10)

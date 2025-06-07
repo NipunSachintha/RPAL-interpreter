@@ -1,0 +1,2 @@
+let rec  check_odd_even n = n eq 0 -> 'Even' | n eq 1 -> 'Odd' | n gr 0 ->  check_odd_even (n-2) |  check_odd_even (-n) 					
+in Print( check_odd_even (8))
