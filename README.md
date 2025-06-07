@@ -78,7 +78,7 @@ To remove all `__pycache__` directories and Python cache files in your repositor
 | `myrpal.py`       | Main driver for RPAL interpretation               |
 | `lexer.py`        | Lexical analysis logic                            |
 | `parser.py`       | AST construction from token stream                |
-| `standardizer.py` | AST to ST transformation logic                  |
+| `standadizer.py` | AST to ST transformation logic                  |
 | `cse_machine.py`  | Execution engine for evaluating SAST              |
 | `Makefile`        | Automates running and cleaning tasks              |
 
