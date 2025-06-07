@@ -1,0 +1,17 @@
+let rec fib (a, b, x, y) = 
+	(x+y) ls a  -> fib (a, b, x + y, x) 
+	| (x+y) ls b -> ((fib (a, b, x + y, x)), print(' '), print(x+y)) | nil
+in
+let print_range (a, b) =
+	b ls a -> '' 
+	| a le 1 -> (fib (a, b, 1, 0), print(' '), print(1), print(' '), print(0)) 
+	|fib (a, b, 1, 0)
+in
+print_range (1,25)
+
+		 
+	
+	
+
+
+

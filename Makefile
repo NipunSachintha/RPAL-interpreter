@@ -1,24 +1,20 @@
 PYTHON = python3
 APP = myrpal.py
-INPUT = test.rpal
 
-# Default target
+
 run:
-	$(PYTHON) $(APP) $(INPUT)
+	$(PYTHON) $(APP) $(file)
 
 lexer:
-	$(PYTHON) $(APP) -l $(INPUT)
+	$(PYTHON) $(APP) -l $(file)
 
 ast:
-	$(PYTHON) $(APP) -ast $(INPUT)
+	$(PYTHON) $(APP) -ast $(file)
 
 st:
-	$(PYTHON) $(APP) -st $(INPUT)
-
-all:
-	$(PYTHON) $(APP) -l -ast -st $(INPUT)
+	$(PYTHON) $(APP) -st $(file)
 
 clean:
 	rm -rf __pycache__ *.pyc
 
-.PHONY: run lexer ast st all clean
+.PHONY: run lexer ast st clean

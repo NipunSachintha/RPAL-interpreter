@@ -1,0 +1,5 @@
+let max2 (x ,y) = x > y -> x | y
+in let max3 (a, b, c) = max2(a, max2(b,c))
+in print( max3(-1,0,-5))
+
+

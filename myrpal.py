@@ -5,7 +5,6 @@ Usage: python myrpal.py [-l] [-ast] [-st] filename
 
 import sys
 from lexer import Lexer
-#from ST import standardize
 from parser import Parser, TokenStorage, Tree
 from csemachine import *
 

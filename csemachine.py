@@ -412,16 +412,9 @@ def get_result(file_name):
 
     ast = parse_file(file_name)
     st = standardize(ast)
-    #print(st)
-   
-    
+
     generate_control_structure(st,0) 
-    #generate_control_structure(st1,0)
-    #print("Control Structures:")
-    #for i, structure in enumerate(control_structures):
-    #    print(f"Control Structure {i}: {structure}")
-    
-    
+ 
     control.append(environments[0].name)
     control += control_structures[0]
 

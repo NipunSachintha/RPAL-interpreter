@@ -1,0 +1,7 @@
+let Check_Sign n =
+	 n eq 0 -> 'Zero'
+	|n ls 0 -> 'Negative'| 'Positive'
+in 
+print(Check_Sign (5))
+
+

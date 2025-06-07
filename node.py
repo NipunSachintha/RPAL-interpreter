@@ -1,10 +1,11 @@
 class Node:
     def __init__(self, value):
+        self.level = 0
         self.value = value
         self.children = []  
-        self.level = 0
+        
 
-# Recursively traverse each child node with increased level        
+# Recursively traverse each child nodes
 def preorder_traversal(root):
     if root is None:
         return

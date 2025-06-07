@@ -1,0 +1,22 @@
+let rec reverse (n, x) = 
+    n gr 0 -> reverse (n/10, (x*10 + (n-(n/10)*10))) | x
+in
+let is_palindrome n = 
+    n eq reverse (n, 0)
+in
+let print_palindromes (start, end) =
+    let rec iterate n =
+        n gr end -> 'Done'
+        | is_palindrome n -> (iterate(n+1), print(' '), print(n))
+        | iterate(n+1)
+    in iterate(start)
+in 
+print_palindromes(2, 200)
+
+
+
+
+
+
+
+
