@@ -1,10 +1,10 @@
+import sys
+from lexer import *
+from standadizer import standardize
 from node import *
 from environment import Environment
 from stack import Stack
 from structures import *
-import sys
-from lexer import Lexer
-from ST import standardize
 from parser import Parser, TokenStorage, Tree
 
 control_structures = []
@@ -65,11 +65,7 @@ def generate_control_structure(root, i):
             generate_control_structure(child, i)
 
     else:
-        if (root.value):
-            control_structures[i].append(root.value)
-        else:
-           
-            control_structures[i].append(root.value)
+        control_structures[i].append(root.value)
         for child in root.children:
             generate_control_structure(child, i)
 
@@ -84,14 +80,14 @@ def lookup(name):
         data_type = info[0]
         value = info[1]
     
-        if data_type == "integer":
+        if data_type == "INT":
             return int(value)
         
         # The rpal.exe program detects srings only when they begin with ' and end with '.
         # Our code must emulate this behaviour.
-        elif data_type == "string":
+        elif data_type == "STR":
             return value.strip("'")
-        elif data_type == "identifier":
+        elif data_type == "ID":
             if (value in builtInFunctions):
                 return value
             else:
@@ -99,12 +95,11 @@ def lookup(name):
                     value = environments[current_environment].variables[value]
                 except KeyError:
                     print("Undeclared Identifier: " + value)
-                    print(environments[current_environment].variables)
                     exit(1)
                 else:
                     return value
             
-    if value == "<Y*>":
+    if value == "Y*":
         return "Y*"
     elif value == "nil":
         return ()
@@ -225,7 +220,6 @@ def apply_rules():
                 
                 lambda_number = stack_symbol_1.number
                 bounded_variable = stack_symbol_1.bounded_variable
-                bounded_variable = bounded_variable.split(":")[1].strip()  # Remove type information if present
                 parent_environment_number = stack_symbol_1.environment
 
                 parent = environments[parent_environment_number]
@@ -241,7 +235,6 @@ def apply_rules():
                         child.add_variable(variable_list[i], stack_symbol_2[i])
                 else:
                     child.add_variable(bounded_variable, stack_symbol_2)
-                    print(f"Added variable {bounded_variable} with value {stack_symbol_2} to environment {child.name}")
 
                 stack.push(child.name)
                 control.append(child.name)
@@ -413,51 +406,21 @@ def parse_file(filename):
     ast = Tree.get_instance().ast_root
     return ast
 
-
-def convert_astnode_to_node(ast_node):
-    """
-    Convert an ASTNode object to a Node object recursively.
-    
-    Args:
-        ast_node: ASTNode object to convert
-        
-    Returns:
-        Node object with converted structure
-    """
-    if ast_node is None:
-        return None
-    
-    # Determine what value to use for the Node
-    # Priority: value (if exists) -> label
-    if ast_node.value  not in ("true", "false", "nil") and ast_node.value is not None:
-        node_value = ("<"+str(ast_node.label)+":"+str(ast_node.value)+">") if ast_node.value is not None else ast_node.label
-    else:
-        node_value = (ast_node.value) if ast_node.value is not None else ast_node.label
-    
-    # Create new Node with the determined value
-    new_node = Node(node_value)
-    
-    # Recursively convert all children
-    for child in ast_node.children:
-        converted_child = convert_astnode_to_node(child)
-        if converted_child is not None:
-            new_node.children.append(converted_child)
-    
-    return new_node
-
 # The following function is called from the myrpal.py file.
-def get_result(filename):
+def get_result(file_name):
     global control
 
-    ast = parse_file(filename)
+    ast = parse_file(file_name)
     st = standardize(ast)
-    st1= convert_astnode_to_node(st)
+    #print(st)
    
-
-    generate_control_structure(st1,0)
+    
+    generate_control_structure(st,0) 
+    #generate_control_structure(st1,0)
     #print("Control Structures:")
     #for i, structure in enumerate(control_structures):
     #    print(f"Control Structure {i}: {structure}")
+    
     
     control.append(environments[0].name)
     control += control_structures[0]

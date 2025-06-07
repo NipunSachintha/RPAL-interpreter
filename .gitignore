@@ -8,3 +8,5 @@ test_parser.py
 test_standardizer.py
 test_cse_machine.py
 test_cases
+rpal_runner.py
+parse_interface.py

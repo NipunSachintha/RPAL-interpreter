@@ -5,25 +5,50 @@ Usage: python myrpal.py [-l] [-ast] [-st] filename
 
 import sys
 from lexer import Lexer
-from ST import standardize
+#from ST import standardize
 from parser import Parser, TokenStorage, Tree
-from CSE.cse_factory import CSEMachineFactory
 from csemachine import *
 
 
 def print_ast(node, dots=0):
-    """Print AST in the required format"""
     if not node:
         return
     prefix = "." * dots
     if hasattr(node, 'value') and node.value in {"nil", "true", "false", "dummy"}:
         print(f"{prefix}<{node.value}>")
+    
     elif hasattr(node, 'value') and node.value is not None:
         print(f"{prefix}<{node.label}:{node.value}>")
     else:
         print(f"{prefix}{node.label}")
     for child in node.children:
         print_ast(child, dots + 1)
+
+def print_st(node, dots=0):
+    if not node:
+        return
+    prefix = "." * dots
+    
+    # Handle Node objects (from standardizer) which only have 'value' attribute
+    if hasattr(node, 'value'):
+        # Check if it's a special value that should be wrapped in angle brackets
+        if node.value in {"<nil>", "<true>", "<false>", "<dummy>"}:
+            print(f"{prefix}{node.value}")
+        # Check if it's already formatted (like <ID:x>, <INT:5>, etc.)
+        elif isinstance(node.value, str) and node.value.startswith('<') and node.value.endswith('>'):
+            print(f"{prefix}{node.value}")
+        # Otherwise just print the value
+        else:
+            print(f"{prefix}{node.value}")
+    
+    # Fallback - just convert to string
+    else:
+        print(f"{prefix}{str(node)}")
+    
+    # Print children
+    if hasattr(node, 'children'):
+        for child in node.children:
+            print_st(child, dots + 1)
 
 def parse_file(filename):
     """Parse a file and return the AST"""
@@ -77,7 +102,7 @@ def print_st_output(filename):
     """Print standardized tree output (-st flag)"""
     ast = parse_file(filename)
     st = standardize(ast)
-    print_ast(st)
+    print_st(st)
 
 def execute_program(filename):
     """Execute the program and print result"""
@@ -86,11 +111,6 @@ def execute_program(filename):
         st = standardize(ast)
         result  = get_result(filename)
         
-        
-        #Create CSE Machine and execute
-        #factory = CSEMachineFactory()
-        #cse_machine = factory.get_cse_machine(st)
-        #result = cse_machine.get_answer()
         if result is not None:
             print(result)
         
@@ -140,9 +160,11 @@ def main():
         if "-st" in switches:
             print()  # Add newline before ST output
     
-    elif "-st" in switches:
+    if "-st" in switches:
         print_st_output(filename)
         output_printed = True
+
+    execute_program(filename)
     
     # If any switch was used, don't execute the program
     if not output_printed:

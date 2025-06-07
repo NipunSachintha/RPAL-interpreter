@@ -201,7 +201,7 @@ def E():
         n = 0
 
         # Process identifiers until a non-identifier token is encountered
-        while token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
+        while (token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords) or token_storage.top().value == "(":
             Vb()
             n += 1
 
@@ -452,7 +452,7 @@ def Ap():
         # Check for identifier token
         if token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
             token = token_storage.pop()
-            build_tree("identifier", 0, True, token.value)
+            build_tree("ID", 0, True, token.value)
         else:
             raise SyntaxError("Identifier expected")
 
@@ -489,15 +489,15 @@ def Rn():
     if top.type == TokenType.IDENTIFIER and top.value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
-        build_tree("identifier", 0, True, token.value)
+        build_tree("ID", 0, True, token.value)
     elif top.type == TokenType.INTEGER:
         # Parse Integer
         token = token_storage.pop()
-        build_tree("integer", 0, True, token.value)
+        build_tree("INT", 0, True, token.value)
     elif top.type == TokenType.STRING:
         # Parse String
         token = token_storage.pop()
-        build_tree("string", 0, True, token.value)
+        build_tree("STR", 0, True, token.value)
     elif top.value == "true":
         # Parse true
         token_storage.pop()
@@ -590,7 +590,7 @@ def Db():
     elif token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
-        build_tree("identifier", 0, True, token.value)
+        build_tree("ID", 0, True, token.value)
 
         if token_storage.top().value == ",":
             token_storage.pop()
@@ -637,7 +637,7 @@ def Vb():
     if token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
-        build_tree("identifier", 0, True, token.value)
+        build_tree("ID", 0, True, token.value)
     elif token_storage.top().value == "(":
         token_storage.pop()
 
@@ -647,7 +647,7 @@ def Vb():
         elif token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
             # Parse Identifier
             token = token_storage.pop()
-            build_tree("identifier", 0, True, token.value)
+            build_tree("ID", 0, True, token.value)
 
             if token_storage.top().value == ",":
                 token_storage.pop()
@@ -673,32 +673,16 @@ def Vl():
     if token_storage.top().type == TokenType.IDENTIFIER and token_storage.top().value not in keywords:
         # Parse Identifier
         token = token_storage.pop()
-        build_tree("identifier", 0, True, token.value)
+        build_tree("ID", 0, True, token.value)
 
         n = 2
         while token_storage.top().value == ",":
             token_storage.pop()
             token = token_storage.pop()
-            build_tree("identifier", 0, True, token.value)
+            build_tree("ID", 0, True, token.value)
             n += 1
 
         build_tree(",", n, False)
     else:
         raise SyntaxError("Identifier expected")
 
-
-'''# Example usage function (not part of the parser itself)
-def parse_rpal_program(source_code: str):
-    """Parse an RPAL program and return the AST."""
-    # Create a lexer and tokenize the source code
-    lexer = Lexer(source_code)
-    
-    # Set the tokens in TokenStorage
-    token_storage = TokenStorage.get_instance()
-    token_storage.set_tokens(lexer.tokens)
-    
-    # Parse the tokens and build the AST
-    Parser.parse()
-    
-    # Return the root of the AST
-    return Tree.get_instance().ast_root'''
